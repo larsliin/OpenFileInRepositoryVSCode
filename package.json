@@ -1,0 +1,165 @@
+{
+  "name": "open-file-in-repository",
+  "displayName": "Open File in Repository",
+  "icon": "media/icon.png",
+  "description": "Open files, repositories and base-branch comparisons in your Git host.",
+  "version": "1.0.10",
+  "publisher": "larsliin",
+  "private": true,
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/larsliin/OpenFileInRepositoryVSCode.git"
+  },
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/src/extension.js",
+  "extensionKind": [
+    "workspace"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    },
+    "virtualWorkspaces": false
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "openFileInRepository.openFile",
+        "title": "Open File In Repository"
+      },
+      {
+        "command": "openFileInRepository.openRepository",
+        "title": "Open Repository"
+      },
+      {
+        "command": "openFileInRepository.compare",
+        "title": "Compare Branch Against Branch in Repository"
+      },
+      {
+        "command": "openFileInRepository.compareLocal",
+        "title": "Compare Branch Against Branch Locally"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "openFileInRepository.openFile",
+          "when": "resourceScheme == file && !explorerResourceIsFolder",
+          "group": "8_repository@2"
+        },
+        {
+          "command": "openFileInRepository.openRepository",
+          "when": "resourceScheme == file && !explorerResourceIsFolder",
+          "group": "8_repository@1"
+        },
+        {
+          "command": "openFileInRepository.compare",
+          "when": "resourceScheme == file && !explorerResourceIsFolder",
+          "group": "8_repository@3"
+        },
+        {
+          "command": "openFileInRepository.compareLocal",
+          "when": "resourceScheme == file && !explorerResourceIsFolder",
+          "group": "8_repository@4"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "openFileInRepository.openFile",
+          "when": "resourceScheme == file",
+          "group": "8_repository@2"
+        },
+        {
+          "command": "openFileInRepository.openRepository",
+          "when": "resourceScheme == file",
+          "group": "8_repository@1"
+        },
+        {
+          "command": "openFileInRepository.compare",
+          "when": "resourceScheme == file",
+          "group": "8_repository@3"
+        },
+        {
+          "command": "openFileInRepository.compareLocal",
+          "when": "resourceScheme == file",
+          "group": "8_repository@4"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Open File in Repository",
+      "properties": {
+        "openFileInRepository.remote": {
+          "type": "string",
+          "default": "",
+          "scope": "resource",
+          "description": "Remote name override. Otherwise use the branch's upstream remote, origin, or ask."
+        },
+        "openFileInRepository.baseBranch": {
+          "type": "string",
+          "default": "",
+          "scope": "resource",
+          "description": "Optional prefilled value for the comparison prompt, without a remote prefix. Compare always asks you to confirm or edit the base branch; no automatic detection is performed."
+        },
+        "openFileInRepository.provider": {
+          "type": "string",
+          "default": "auto",
+          "scope": "resource",
+          "enum": [
+            "auto",
+            "github",
+            "gitlab",
+            "bitbucket",
+            "azure"
+          ],
+          "description": "URL provider. Override auto for self-hosted GitHub or GitLab."
+        },
+        "openFileInRepository.urlTemplates": {
+          "type": "object",
+          "default": {},
+          "scope": "resource",
+          "additionalProperties": false,
+          "properties": {
+            "repository": {
+              "type": "string"
+            },
+            "file": {
+              "type": "string"
+            },
+            "compare": {
+              "type": "string"
+            }
+          },
+          "markdownDescription": "Custom HTTPS URLs for any provider. Tokens: `{repository}` (HTTPS repository URL), `{branch}`, `{base}` (encoded references), `{path}` (encoded file path, preserving directory separators). Set the relevant action's template to override built-in routes."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('out', { recursive: true, force: true })\"",
+    "build": "npm run clean && tsc -p .",
+    "lint": "eslint .",
+    "test": "npm run build && node --test out/test/repository.test.js",
+    "test:extension": "npm run build && node scripts/test-extension.cjs",
+    "vscode:prepublish": "npm run lint && npm test",
+    "prepackage": "node -e \"require('node:fs').mkdirSync('dist', { recursive: true })\"",
+    "package": "node scripts/package.cjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@types/node": "^22.10.1",
+    "@types/vscode": "1.96.0",
+    "@typescript-eslint/parser": "^8.16.0",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.0.0",
+    "eslint": "^9.17.0",
+    "globals": "^15.14.0",
+    "typescript": "^5.7.2"
+  }
+}
